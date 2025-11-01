@@ -64,20 +64,6 @@ ros2 service call /confirm_location butler_bot/srv/Confirmation "{location: 'kit
 ros2 service call /cancel_order butler_bot/srv/CancelOrder "{table_number: 0}"
 ```
 
-## 📚 Documentation
-
-### User Documentation
-- **[FOOD_DELIVERY_GUIDE.md](FOOD_DELIVERY_GUIDE.md)** - Complete user guide with all 7 scenarios explained
-
-### Technical Documentation
-- **[TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md)** - Comprehensive technical documentation including:
-  - System architecture and design decisions
-  - Code implementation details
-  - State machine design
-  - API reference
-  - Testing procedures
-  - Issues and resolutions
-
 ## 🎬 Scenarios Implemented
 
 | # | Scenario | Description |
