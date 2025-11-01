@@ -155,49 +155,12 @@ ros2 service call /cancel_order butler_bot/srv/CancelOrder "{table_number: 2}"
 ros2 service call /confirm_location butler_bot/srv/Confirmation "{location: 'table_3'}"
 ```
 
-## 📊 Results
-
-All scenarios tested and validated:
-
-| Scenario | Status | Avg Duration |
-|----------|--------|--------------|
-| 1 - Simple | ✅ Pass | 2m 15s |
-| 2 - Timeout | ✅ Pass | 3m 45s |
-| 3a - Kitchen Timeout | ✅ Pass | 1m 35s |
-| 3b - Table Timeout | ✅ Pass | 2m 50s |
-| 4a - Cancel Table | ✅ Pass | 1m 45s |
-| 4b - Cancel Kitchen | ✅ Pass | 45s |
-| 5 - Multi-table | ✅ Pass | 5m 30s |
-| 6 - Multi Timeout | ✅ Pass | 5m 15s |
-| 7 - Multi Cancel | ✅ Pass | 4m 50s |
-
-## 🔧 Troubleshooting
-
-### Navigation server not available
-```bash
-# Check if Nav2 is running
-ros2 topic list | grep navigate_to_pose
-```
-
-### Location not found
-```bash
-# Verify location file exists
-cat ~/Documents/location_for_butler_bot
-```
 
 ### Action server not responding
 ```bash
 # Restart food delivery system
 ros2 launch butler_bot food_delivery.launch.py
-```
-
-## 📝 Code Metrics
-
-- **Total Lines**: 897 lines of Python
-- **Functions**: 22
-- **Classes**: 5
-- **States**: 8 robot states
-- **Scenarios**: 7 complete scenarios
+``
 
 ## 🔄 Workflow Example
 
@@ -279,28 +242,6 @@ ros2 service call /cancel_order butler_bot/srv/CancelOrder \
   "{table_number: 2}"
 ```
 
-## 🔮 Future Enhancements
-
-- Battery management
-- Priority queue for orders
-- Dynamic location registration
-- Customer notification system
-- Delivery statistics dashboard
-- Voice-controlled confirmations
-- Obstacle detection and rerouting
-
-## 🐛 Known Issues
-
-None - All scenarios tested and working correctly.
-
-## 📄 License
-
-[Your License Here]
-
-## 👥 Contributors
-
-- [Your Name/Team]
-
 ## 🔗 Related Documentation
 
 - [ROS 2 Humble Documentation](https://docs.ros.org/en/humble/)
@@ -309,7 +250,3 @@ None - All scenarios tested and working correctly.
 
 ---
 
-**Project Status**: ✅ Production Ready
-**Last Updated**: November 2024
-**ROS 2 Version**: Humble
-**Testing**: All scenarios validated
