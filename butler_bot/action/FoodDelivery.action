@@ -1,0 +1,16 @@
+# Request: list of table numbers for delivery
+int32[] table_numbers
+float32 confirmation_timeout  # timeout in seconds for confirmation (0 = no confirmation needed)
+---
+# Result: success status and delivery details
+bool success
+string message
+int32[] delivered_tables
+int32[] skipped_tables
+---
+# Feedback: current status and location
+string current_state
+string current_location
+int32 current_table
+int32 tables_delivered
+int32 total_tables

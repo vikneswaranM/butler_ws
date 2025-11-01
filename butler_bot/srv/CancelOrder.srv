@@ -1,0 +1,5 @@
+# Cancel a specific table order
+int32 table_number
+---
+bool success
+string message

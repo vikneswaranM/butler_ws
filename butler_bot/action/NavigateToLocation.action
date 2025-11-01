@@ -1,0 +1,11 @@
+# Request: location name to navigate to
+string location_name
+---
+# Result: success status and message
+bool success
+string message
+---
+# Feedback: current status and distance remaining
+string status
+float32 distance_remaining
+

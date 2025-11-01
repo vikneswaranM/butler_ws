@@ -1,0 +1,5 @@
+# Request confirmation at a location
+string location  # "kitchen" or "table_X"
+---
+bool confirmed
+string message

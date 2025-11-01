@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- PROPERTIES (tweak here if needed) -->
+  <xacro:property name="wheel_radius" value="0.0425"/>
+  <xacro:property name="wheel_width"  value="0.03"/>
+  <xacro:property name="wheel_separation" value="0.22"/>  <!-- distance between left and right wheel centers -->
+  <xacro:property name="body_length" value="0.30"/>
+  <xacro:property name="body_width"  value="0.20"/>
+  <xacro:property name="body_height" value="0.10"/>
+  <xacro:property name="base_z" value="0.09"/>
+
+  <!-- MATERIALS -->
+  <material name="blue"><color rgba="0 0 0.8 1"/></material>
+  <material name="black"><color rgba="0 0 0 1"/></material>
+  <material name="white"><color rgba="1 1 1 1"/></material>
+
+  <!-- BASE LINK -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 ${base_z}"/>
+      <geometry>
+        <box size="${body_length} ${body_width} ${body_height}"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 ${base_z}"/>
+      <geometry>
+        <box size="${body_length} ${body_width} ${body_height}"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <!-- Use a reasonable simple inertial (tweak for realistic sim) -->
+      <origin xyz="0 0 ${base_z}"/>
+      <mass value="3.0"/>
+      <inertia ixx="0.03" iyy="0.03" izz="0.03" ixy="0.0" ixz="0.0" iyz="0.0"/>
+    </inertial>
+  </link>
+
+  <!-- BASE FOOTPRINT (ground-level frame for navigation) -->
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_footprint"/>
+    <origin xyz="0 0 -${base_z}"/>
+  </joint>
+
+
+
+  <!-- RIGHT WHEEL -->
+  <link name="right_wheel">
+    <visual>
+      <!-- Cylinder oriented so rotation axis is Y (we rotate about Y) -->
+      <origin rpy="1.5708 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <collision>
+      <origin rpy="1.5708 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0.3"/>
+      <!-- approximate wheel inertia -->
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.0005" ixy="0.0" ixz="0.0" iyz="0.0"/>
+    </inertial>
+  </link>
+
+  <joint name="body_right_wheel" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <!-- place wheel at front-right of base (x, y, z) -->
+    <origin xyz="0.10 0.11 ${wheel_radius}"/>
+    <!-- rotation axis: Y (spins to drive +x) -->
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- LEFT WHEEL -->
+  <link name="left_wheel">
+    <visual>
+      <origin rpy="1.5708 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <collision>
+      <origin rpy="1.5708 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.0005" ixy="0.0" ixz="0.0" iyz="0.0"/>
+    </inertial>
+  </link>
+
+  <joint name="body_left_wheel" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="0.10 -0.11 ${wheel_radius}"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- CENTER SUPPORT (non-driven) -->
+  <link name="center_spherical_wheel" type = "fixed">
+    <visual>
+      <origin xyz="-0.10 0 ${wheel_radius}"/>
+      <geometry>
+        <sphere radius="0.04"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.10 0 ${wheel_radius}"/>
+      <geometry>
+        <sphere radius="0.04"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <gazebo reference="center_spherical_wheel">
+        <material>Gazebo/Black</material>
+        <mu1 value="0.001"/>
+        <mu2 value="0.001"/>
+  </gazebo>
+
+  <joint name="body_center_spherical_wheel" type="fixed">
+    <parent link="base_link"/>
+    <child link="center_spherical_wheel"/>
+  </joint>
+
+  <!-- Optional: simple placeholder collision geometry for wheels if needed -->
+  <!-- (Already done above by using cylinder collision) -->
+
+  <!-- 
+       GAZEBO PLUGINS (for ROS2 integration)
+ -->
+
+
+  <!-- Differential-drive plugin: listens to /cmd_vel and actuates left/right joints -->
+  <gazebo>
+    <plugin name="gazebo_diff_drive" filename="libgazebo_ros_diff_drive.so">
+      <ros>
+        <namespace>/</namespace>
+        <!-- ensure this matches where you will publish teleop cmd_vel -->
+        <remapping>cmd_vel:=/cmd_vel</remapping>
+      </ros>
+
+      <!-- wheel iformation-->
+      <left_joint>body_right_wheel</left_joint>
+      <right_joint>body_left_wheel</right_joint>
+      <wheel_separation>${wheel_separation}</wheel_separation>
+      <wheel_diameter>0.08</wheel_diameter>
+
+      <!-- limits-->
+      <max_wheel_torque>5.0</max_wheel_torque>
+      <max_wheel_acceleration>10.0</max_wheel_acceleration>
+
+      <!--output-->
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <publish_odometry>true</publish_odometry>
+      <publish_wheel_tf>true</publish_wheel_tf> <!-- wheel->base_link TF -->  
+      <publish_odom_tf>true</publish_odom_tf>   <!-- odom->base_link TF -->
+
+    </plugin>
+  </gazebo>
+
+</robot>
