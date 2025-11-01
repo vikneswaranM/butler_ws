@@ -141,56 +141,12 @@ ros2 service call /cancel_order butler_bot/srv/CancelOrder "{table_number: 2}"
 ros2 service call /confirm_location butler_bot/srv/Confirmation "{location: 'table_3'}"
 ```
 
-
 ### Action server not responding
 ```bash
 # Restart food delivery system
 ros2 launch butler_bot food_delivery.launch.py
 ``
 
-## 🔄 Workflow Example
-
-**Scenario 3b: Table timeout after kitchen confirmation**
-
-```
-1. Client sends order: table_1, timeout=30s
-2. Robot: IDLE → GOING_TO_KITCHEN
-3. Robot arrives: AT_KITCHEN
-4. Wait 30s for confirmation
-5. User confirms kitchen ✓
-6. Robot: GOING_TO_TABLE
-7. Robot arrives: AT_TABLE
-8. Wait 30s for confirmation
-9. Timeout! (no confirmation)
-10. Robot: RETURNING_TO_KITCHEN (food picked up, return it)
-11. Robot: GOING_HOME
-12. Robot: AT_HOME → IDLE
-13. Result: delivered=[], skipped=[1]
-```
-
-## 🚦 State Machine
-
-```
-IDLE
-  ↓ order received
-GOING_TO_KITCHEN
-  ↓ reached kitchen
-AT_KITCHEN
-  ↓ confirmed (or timeout → GOING_HOME)
-GOING_TO_TABLE
-  ↓ reached table (or cancelled → RETURNING_TO_KITCHEN)
-AT_TABLE
-  ↓ confirmed/timeout
-[Repeat for each table]
-  ↓ all done
-RETURNING_TO_KITCHEN (if needed)
-  ↓
-GOING_HOME
-  ↓
-AT_HOME
-  ↓
-IDLE
-```
 
 ## 🎓 Key Technologies
 
